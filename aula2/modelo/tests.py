@@ -57,6 +57,29 @@ class TestModelo(unittest.TestCase):
         self.assertEqual(len(filmes), 0)
 
 
+    def test_cadastrar_sala_retorna_objeto_sala(self):
+        sala = cadastrar_sala(1, 100, '2D')
+        self.assertIsInstance(sala, Sala)
+
+    def test_cadastrar_sala_atributos_corretos(self):
+        sala = cadastrar_sala(1, 100, '2D')
+        self.assertEqual(sala.numero, 1)
+        self.assertEqual(sala.capacidade, 100)
+        self.assertEqual(sala.tipo, '2D')
+
+    def test_cadastrar_sala_numero_invalido_retorna_none(self):
+        sala = cadastrar_sala(0, 100, '2D')
+        self.assertIsNone(sala)
+
+    def test_cadastrar_sala_capacidade_invalida_retorna_none(self):
+        sala = cadastrar_sala(1, 0, '2D')
+        self.assertIsNone(sala)
+
+    def test_cadastrar_sala_numero_repetido_retorna_none(self):
+        cadastrar_sala(1, 100, '2D')
+        sala2 = cadastrar_sala(1, 200, '3D')
+        self.assertIsNone(sala2)
+
 
 if __name__ == '__main__':
     unittest.main()

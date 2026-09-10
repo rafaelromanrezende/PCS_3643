@@ -1,10 +1,12 @@
+import datetime
+
 ###listas
-#filmes
-#salas
-#sessoes
+filmes = []
+salas = []
+sessoes = []
 
 ###dictionary
-#tipo_sala
+tipo_sala = {}
 
 class Filme:
 
@@ -14,6 +16,9 @@ class Filme:
         self.data_estreia = data_estreia
         self.data_saida = data_saida
         self.duracao = duracao
+        
+
+
 
 class Sala:
 
@@ -32,3 +37,15 @@ class Sessao:
 #        self.assentos
 
 #metodos
+
+def cadastrar_filme(nome, data_estreia, data_saida, duracao):
+    try:
+        datetime.strptime(data_estreia, "%d/%m/%Y")
+        datetime.strptime(data_saida, "%d/%m/%Y")
+    except ValueError:
+        return None
+
+    codigo = len(filmes) + 1
+    filme = Filme(codigo, nome, data_estreia, data_saida, duracao)
+    filmes.append(filme)
+    return filme

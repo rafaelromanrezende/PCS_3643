@@ -67,3 +67,35 @@ def cadastrar_sala(numero, capacidade, tipo_sala):
     sala = Sala(numero, capacidade, tipo_sala)
     salas.append(sala)
     return sala
+
+def listar_filmes_por_data(data):
+    try:
+        data_convertida = datetime.strptime(data, "%d/%m/%Y")
+
+        if data_convertida.strftime("%d/%m/%Y") != data:
+            return "Data Inválida"
+    except ValueError:
+        return "Data Inválida"
+
+    resultado = []
+
+    for sessao in sessoes:
+        if sessao.data == data and 0 in sessao.assentos:
+            valor_ingresso = tipo_sala[sessao.sala.tipo]
+
+            linha = (
+                f"{sessao.codigo}: {sessao.filme.nome}, "
+                f"sala {sessao.sala.numero} ({sessao.sala.tipo}), "
+                f"{sessao.hora_inicio}h, {valor_ingresso} reais."
+            )
+
+            resultado.append(linha)
+
+    if not resultado:
+        return "Nenhum filme no dia escolhido."
+
+    return "\n".join(resultado)
+
+
+
+           

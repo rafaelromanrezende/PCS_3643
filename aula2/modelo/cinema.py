@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 #Eduardo Gobbi Jorge | NUSP: 5980278
 #Marcelo Olivetti França Neri de Almeida | NUSP: 15474654
 #Rafael Romanello Rezende | NUSP: 15485490
@@ -15,8 +15,8 @@ tipo_sala = {}
 
 class Filme:
 
-    def __init__(self, nome=None, data_estreia=None, data_saida=None, duracao=None):
-#        self.codigo
+    def __init__(self, codigo=None, nome=None, data_estreia=None, data_saida=None, duracao=None):
+        self.codigo = codigo
         self.nome = nome
         self.data_estreia = data_estreia
         self.data_saida = data_saida
@@ -55,6 +55,11 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
     filmes.append(filme)
     return filme
 
+def cadastrar_valor_ingresso(tipo_sala, valor_ingresso):
+    if valor_ingresso <= 0 or not isinstance(valor_ingresso, int):
+        return False
+    tipo_sala[tipo_sala] = valor_ingresso
+    return True
 
 def cadastrar_sala(numero, capacidade, tipo_sala):
     if numero <= 0 or capacidade <= 0:

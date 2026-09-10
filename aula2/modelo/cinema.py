@@ -73,9 +73,9 @@ def listar_filmes_por_data(data):
         data_convertida = datetime.strptime(data, "%d/%m/%Y")
 
         if data_convertida.strftime("%d/%m/%Y") != data:
-            return "Data Inválida"
+            return "Data invalida."
     except ValueError:
-        return "Data Inválida"
+        return "Data invalida."
 
     resultado = []
 
@@ -95,7 +95,4 @@ def listar_filmes_por_data(data):
         return "Nenhum filme no dia escolhido."
 
     return "\n".join(resultado)
-
-
-
-           
+         

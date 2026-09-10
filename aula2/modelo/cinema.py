@@ -54,3 +54,16 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
     filme = Filme(codigo, nome, data_estreia, data_saida, duracao)
     filmes.append(filme)
     return filme
+
+
+def cadastrar_sala(numero, capacidade, tipo_sala):
+    if numero <= 0 or capacidade <= 0:
+        return None
+
+    for sala_existente in salas:
+        if sala_existente.numero == numero:
+            return None
+
+    sala = Sala(numero, capacidade, tipo_sala)
+    salas.append(sala)
+    return sala

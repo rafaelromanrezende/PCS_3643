@@ -56,7 +56,8 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
     return filme
 
 def cadastrar_valor_ingresso(tipo_sala, valor_ingresso):
-    if ((valor_ingresso <= 0) or !(valor_ingresso is int)) return False
+    if valor_ingresso <= 0 or not isinstance(valor_ingresso, int):
+        return False
     tipo_sala[tipo_sala] = valor_ingresso
     return True
 

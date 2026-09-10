@@ -13,6 +13,7 @@ class TestModelo(unittest.TestCase):
         filmes.clear()
         salas.clear()
         sessoes.clear()
+        tipo_sala.clear()
 
     def test_hello(self):
         self.assertEqual('hello','hello')
@@ -79,7 +80,91 @@ class TestModelo(unittest.TestCase):
         cadastrar_sala(1, 100, '2D')
         sala2 = cadastrar_sala(1, 200, '3D')
         self.assertIsNone(sala2)
+     
+    def test_listar_filme_disponivel(self):
+        tipo_sala['3D'] = 50
 
+        filme = cadastrar_filme(
+            'King Kong', '10/03/2026', '10/05/2026', 120
+        )
+        sala = cadastrar_sala(1, 100, '3D')
+
+        sessao = Sessao(sala, filme, '15/03/2026', 12)
+        sessao.codigo = 1
+        sessao.assentos = [0] * 100
+        sessoes.append(sessao)
+
+        resultado = listar_filmes_por_data('15/03/2026')
+
+        self.assertEqual(
+            resultado,
+            '1: King Kong, sala 1 (3D), 12h, 50 reais.'
+        )
+
+    def test_listar_varias_sessoes(self):
+        tipo_sala['3D'] = 50
+
+        filme = cadastrar_filme(
+            'King Kong', '10/03/2026', '10/05/2026', 120
+        )
+        sala = cadastrar_sala(1, 100, '3D')
+
+        sessao1 = Sessao(sala, filme, '15/03/2026', 12)
+        sessao1.codigo = 1
+        sessao1.assentos = [0] * 100
+
+        sessao2 = Sessao(sala, filme, '15/03/2026', 18)
+        sessao2.codigo = 2
+        sessao2.assentos = [0] * 100
+
+        sessoes.append(sessao1)
+        sessoes.append(sessao2)
+
+        resultado = listar_filmes_por_data('15/03/2026')
+
+        esperado = (
+            '1: King Kong, sala 1 (3D), 12h, 50 reais.\n'
+            '2: King Kong, sala 1 (3D), 18h, 50 reais.'
+        )
+
+        self.assertEqual(resultado, esperado)
+
+    def test_nao_listar_sessao_lotada(self):
+        tipo_sala['3D'] = 50
+
+        filme = cadastrar_filme(
+            'King Kong', '10/03/2026', '10/05/2026', 120
+        )
+        sala = cadastrar_sala(1, 3, '3D')
+
+        sessao = Sessao(sala, filme, '15/03/2026', 12)
+        sessao.codigo = 1
+        sessao.assentos = [1, 1, 1]
+        sessoes.append(sessao)
+
+        resultado = listar_filmes_por_data('15/03/2026')
+
+        self.assertEqual(
+            resultado,
+            'Nenhum filme no dia escolhido.'
+        )
+
+    def test_nenhum_filme_no_dia(self):
+        resultado = listar_filmes_por_data('15/03/2026')
+
+        self.assertEqual(
+            resultado,
+            'Nenhum filme no dia escolhido.'
+        )
+
+    def test_data_invalida(self):
+        resultado = listar_filmes_por_data('31/02/2026')
+
+        self.assertEqual(resultado, 'Data invalida.')
+
+    def test_data_formato_invalido(self):
+        resultado = listar_filmes_por_data('15-03-2026')
+        self.assertEqual(resultado, 'Data invalida.')
 
 if __name__ == '__main__':
     unittest.main()

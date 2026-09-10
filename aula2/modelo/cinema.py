@@ -108,7 +108,7 @@ def cadastrar_sessao(numero_sala, codigo_filme, data_sessao, hora_inicio):
         return None
 
     try:
-        datetime.datetime.strptime(data_sessao, "%d/%m/%Y")
+        datetime.strptime(data_sessao, "%d/%m/%Y")
     except ValueError:
         return None
 

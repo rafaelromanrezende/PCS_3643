@@ -89,9 +89,7 @@ class TestModelo(unittest.TestCase):
         )
         sala = cadastrar_sala(1, 100, '3D')
 
-        sessao = Sessao(sala, filme, '15/03/2026', 12)
-        sessao.codigo = 1
-        sessao.assentos = [0] * 100
+        sessao = Sessao(1, sala, filme, '15/03/2026', 12, 100)
         sessoes.append(sessao)
 
         resultado = listar_filmes_por_data('15/03/2026')
@@ -109,13 +107,12 @@ class TestModelo(unittest.TestCase):
         )
         sala = cadastrar_sala(1, 100, '3D')
 
-        sessao1 = Sessao(sala, filme, '15/03/2026', 12)
-        sessao1.codigo = 1
-        sessao1.assentos = [0] * 100
-
-        sessao2 = Sessao(sala, filme, '15/03/2026', 18)
-        sessao2.codigo = 2
-        sessao2.assentos = [0] * 100
+        sessao1 = Sessao(
+            1, sala, filme, '15/03/2026', 12, 100
+        )
+        sessao2 = Sessao(
+            2, sala, filme, '15/03/2026', 18, 100
+        )
 
         sessoes.append(sessao1)
         sessoes.append(sessao2)
@@ -129,6 +126,7 @@ class TestModelo(unittest.TestCase):
 
         self.assertEqual(resultado, esperado)
 
+
     def test_nao_listar_sessao_lotada(self):
         tipo_sala['3D'] = 50
 
@@ -137,9 +135,11 @@ class TestModelo(unittest.TestCase):
         )
         sala = cadastrar_sala(1, 3, '3D')
 
-        sessao = Sessao(sala, filme, '15/03/2026', 12)
-        sessao.codigo = 1
-        sessao.assentos = [1, 1, 1]
+        sessao = Sessao(
+            1, sala, filme, '15/03/2026', 12, 3
+        )
+        sessao.assentos = {1: 1, 2: 1, 3: 1}
+
         sessoes.append(sessao)
 
         resultado = listar_filmes_por_data('15/03/2026')
@@ -148,7 +148,7 @@ class TestModelo(unittest.TestCase):
             resultado,
             'Nenhum filme no dia escolhido.'
         )
-
+        
     def test_nenhum_filme_no_dia(self):
         resultado = listar_filmes_por_data('15/03/2026')
 

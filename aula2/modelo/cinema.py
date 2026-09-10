@@ -85,7 +85,7 @@ def listar_filmes_por_data(data):
     resultado = []
 
     for sessao in sessoes:
-        if sessao.data == data and 0 in sessao.assentos:
+        if sessao.data == data and 0 in sessao.assentos.values():
             valor_ingresso = tipo_sala[sessao.sala.tipo]
 
             linha = (

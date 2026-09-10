@@ -126,3 +126,36 @@ def cadastrar_sessao(numero_sala, codigo_filme, data_sessao, hora_inicio):
                     hora_inicio, sala.capacidade)
     sessoes.append(sessao)
     return sessao
+
+def comprarIngressos(codigo_sessao, assentos, tipos_ingresso):
+    sessao = next(
+        (item for item in sessoes if item.codigo == codigo_sessao),
+        None
+    )
+
+    if sessao is None:
+        return 0
+
+    if len(assentos) != len(tipos_ingresso):
+        return 0
+
+    for assento, ingresso in zip(assentos, tipos_ingresso):
+        if assento not in sessao.assentos:
+            return 0
+
+        if sessao.assentos[assento] == 1:
+            return 0
+
+        if ingresso not in (0, 1):
+            return 0
+
+    valor = tipo_sala[sessao.sala.tipo]
+    total = 0
+
+    for ingresso in tipos_ingresso:
+        total += valor if ingresso == 0 else valor / 2
+
+    for assento in assentos:
+        sessao.assentos[assento] = 1
+
+    return total

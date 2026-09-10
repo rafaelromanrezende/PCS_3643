@@ -33,13 +33,13 @@ class Sala:
         self.tipo = tipo
 
 class Sessao:
-    def __init__(self, sala=None, filme=None, data=None, hora_inicio=None):
-#        self.codigo
+    def __init__(self, codigo=None, sala=None, filme=None, data=None, hora_inicio=None, capacidade=0):
+        self.codigo = codigo
         self.sala = sala
         self.filme = filme
         self.data = data
         self.hora_inicio = hora_inicio
-#        self.assentos
+        self.assentos = {numero: 0 for numero in range(1, capacidade + 1)}
 
 #metodos
 
@@ -100,4 +100,29 @@ def listar_filmes_por_data(data):
         return "Nenhum filme no dia escolhido."
 
     return "\n".join(resultado)
-         
+
+def cadastrar_sessao(numero_sala, codigo_filme, data_sessao, hora_inicio):
+    if (type(numero_sala) is not int or type(codigo_filme) is not int or
+            type(hora_inicio) is not int or not 0 <= hora_inicio <= 23 or
+            not isinstance(data_sessao, str)):
+        return None
+
+    try:
+        datetime.datetime.strptime(data_sessao, "%d/%m/%Y")
+    except ValueError:
+        return None
+
+    sala = next((sala for sala in salas if sala.numero == numero_sala), None)
+    if sala is None:
+        return None
+
+    for sessao in sessoes:
+        if (sessao.sala == numero_sala and sessao.data == data_sessao and
+                sessao.hora_inicio == hora_inicio):
+            return None
+
+    codigo = len(sessoes) + 1
+    sessao = Sessao(codigo, numero_sala, codigo_filme, data_sessao,
+                    hora_inicio, sala.capacidade)
+    sessoes.append(sessao)
+    return sessao

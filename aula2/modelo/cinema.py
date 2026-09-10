@@ -55,6 +55,10 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
     filmes.append(filme)
     return filme
 
+def cadastrar_valor_ingresso(tipo_sala, valor_ingresso):
+    if ((valor_ingresso <= 0) or !(valor_ingresso is int)) return False
+    tipo_sala[tipo_sala] = valor_ingresso
+    return True
 
 def cadastrar_sala(numero, capacidade, tipo_sala):
     if numero <= 0 or capacidade <= 0:

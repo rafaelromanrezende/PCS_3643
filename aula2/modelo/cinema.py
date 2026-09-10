@@ -44,11 +44,21 @@ class Sessao:
 #metodos
 
 def cadastrar_filme(nome, data_estreia, data_saida, duracao):
+    if not nome or duracao <= 0:
+        return None
+
     try:
-        datetime.strptime(data_estreia, "%d/%m/%Y")
-        datetime.strptime(data_saida, "%d/%m/%Y")
+        data_estreia_convertida = datetime.strptime(data_estreia, "%d/%m/%Y")
+        data_saida_convertida = datetime.strptime(data_saida, "%d/%m/%Y")
     except ValueError:
         return None
+
+    if data_estreia_convertida > data_saida_convertida:
+        return None
+
+    for filme_existente in filmes:
+        if filme_existente.nome == nome:
+            return None
 
     codigo = len(filmes) + 1
     filme = Filme(codigo, nome, data_estreia, data_saida, duracao)
@@ -56,22 +66,27 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
     return filme
 
 def cadastrar_valor_ingresso(tipo_sala, valor_ingresso):
-    if valor_ingresso <= 0 or not isinstance(valor_ingresso, int):
+    if tipo_sala not in ('2D', '3D') or valor_ingresso <= 0 or not isinstance(valor_ingresso, int):
         return False
     globals()["tipo_sala"][tipo_sala] = valor_ingresso
     return True
 
 def cadastrar_sala(numero, capacidade, tipo_sala):
-    if numero <= 0 or capacidade <= 0:
+    if numero <= 0 or capacidade <= 0 or tipo_sala not in ('2D', '3D'):
         return None
 
-    for sala_existente in salas:
-        if sala_existente.numero == numero:
-            return None
+    if pegar_sala(numero) is not None:
+        return None
 
     sala = Sala(numero, capacidade, tipo_sala)
     salas.append(sala)
     return sala
+
+def pegar_sala(numero):
+    return next((sala for sala in salas if sala.numero == numero), None)
+
+def pegar_filme(codigo):
+    return next((filme for filme in filmes if filme.codigo == codigo), None)
 
 def listar_filmes_por_data(data):
     try:
@@ -112,17 +127,21 @@ def cadastrar_sessao(numero_sala, codigo_filme, data_sessao, hora_inicio):
     except ValueError:
         return None
 
-    sala = next((sala for sala in salas if sala.numero == numero_sala), None)
+    sala = pegar_sala(numero_sala)
     if sala is None:
         return None
 
+    filme = pegar_filme(codigo_filme)
+    if filme is None:
+        return None
+
     for sessao in sessoes:
-        if (sessao.sala == numero_sala and sessao.data == data_sessao and
+        if (sessao.sala.numero == numero_sala and sessao.data == data_sessao and
                 sessao.hora_inicio == hora_inicio):
             return None
 
     codigo = len(sessoes) + 1
-    sessao = Sessao(codigo, numero_sala, codigo_filme, data_sessao,
+    sessao = Sessao(codigo, sala, filme, data_sessao,
                     hora_inicio, sala.capacidade)
     sessoes.append(sessao)
     return sessao

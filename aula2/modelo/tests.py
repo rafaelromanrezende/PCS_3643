@@ -1,3 +1,9 @@
+#Eduardo Gobbi Jorge | NUSP: 5980278
+#Marcelo Olivetti França Neri de Almeida | NUSP: 15474654
+#Rafael Romanello Rezende | NUSP: 15485490
+#Vinícius Akira Durante Tahara | NUSP: 12547002
+
+
 import unittest
 
 class TestModelo(unittest.TestCase):

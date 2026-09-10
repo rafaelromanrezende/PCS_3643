@@ -166,5 +166,90 @@ class TestModelo(unittest.TestCase):
         resultado = listar_filmes_por_data('15-03-2026')
         self.assertEqual(resultado, 'Data invalida.')
 
+
+    # US06 - comprar ingressos
+
+    def _criar_sessao_padrao(self, capacidade=100):
+        tipo_sala['3D'] = 50
+        filme = cadastrar_filme('King Kong', '10/03/2026', '10/05/2026', 120)
+        sala = cadastrar_sala(1, capacidade, '3D')
+        sessao = Sessao(1, sala, filme, '15/03/2026', 12, capacidade)
+        sessoes.append(sessao)
+        return sessao
+
+    def test_comprar_ingresso_inteira_retorna_valor_cheio(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [1], [0])
+        self.assertEqual(total, 50)
+
+    def test_comprar_ingresso_meia_retorna_metade_do_valor(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [1], [1])
+        self.assertEqual(total, 25)
+
+    def test_comprar_varios_ingressos_tipos_mistos_soma_correta(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [1, 2, 3], [0, 1, 0])
+        self.assertEqual(total, 125)
+
+    def test_comprar_ingresso_reserva_assento_escolhido(self):
+        sessao = self._criar_sessao_padrao()
+        comprarIngressos(1, [1], [0])
+        self.assertEqual(sessao.assentos[1], 1)
+
+    def test_comprar_ingresso_nao_reserva_outros_assentos(self):
+        sessao = self._criar_sessao_padrao()
+        comprarIngressos(1, [1], [0])
+        self.assertEqual(sessao.assentos[2], 0)
+
+    def test_comprar_ingresso_sessao_inexistente_retorna_zero(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(999, [1], [0])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_assento_ja_ocupado_retorna_zero(self):
+        sessao = self._criar_sessao_padrao()
+        sessao.assentos[1] = 1
+        total = comprarIngressos(1, [1], [0])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_assento_inexistente_retorna_zero(self):
+        self._criar_sessao_padrao(capacidade=3)
+        total = comprarIngressos(1, [10], [0])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_tipo_invalido_retorna_zero(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [1], [2])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_listas_tamanhos_diferentes_retorna_zero(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [1, 2], [0])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_lista_vazia_retorna_zero(self):
+        self._criar_sessao_padrao()
+        total = comprarIngressos(1, [], [])
+        self.assertEqual(total, 0)
+
+    def test_comprar_ingresso_parcialmente_invalido_nao_reserva_nenhum_assento(self):
+        sessao = self._criar_sessao_padrao()
+        sessao.assentos[2] = 1
+
+        total = comprarIngressos(1, [1, 2], [0, 0])
+
+        self.assertEqual(total, 0)
+        self.assertEqual(sessao.assentos[1], 0)
+
+    def test_comprar_ingresso_assento_repetido_na_mesma_compra(self):
+        sessao = self._criar_sessao_padrao()
+
+        total = comprarIngressos(1, [1, 1], [0, 0])
+
+        self.assertEqual(total, 100)
+        self.assertEqual(sessao.assentos[1], 1)
+
+
 if __name__ == '__main__':
     unittest.main()

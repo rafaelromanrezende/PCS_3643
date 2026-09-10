@@ -58,7 +58,7 @@ def cadastrar_filme(nome, data_estreia, data_saida, duracao):
 def cadastrar_valor_ingresso(tipo_sala, valor_ingresso):
     if valor_ingresso <= 0 or not isinstance(valor_ingresso, int):
         return False
-    tipo_sala[tipo_sala] = valor_ingresso
+    globals()["tipo_sala"][tipo_sala] = valor_ingresso
     return True
 
 def cadastrar_sala(numero, capacidade, tipo_sala):

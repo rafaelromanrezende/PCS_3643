@@ -1,7 +1,7 @@
 from datetime import date
 
 from sqlalchemy import Date, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from model.database import Base
 
@@ -14,5 +14,3 @@ class Filme(Base):
     data_estreia: Mapped[date] = mapped_column(Date, nullable=False)
     data_saida: Mapped[date] = mapped_column(Date, nullable=False)
     duracao: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    sessoes: Mapped[list["Sessao"]] = relationship(back_populates="filme")

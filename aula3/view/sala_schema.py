@@ -1,17 +1,24 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from view.campos import TipoSala
 
 
 class SalaBase(BaseModel):
-    pass
+    capacidade: int = Field (gt=0)
+    tipo: TipoSala
+    
 
 
 class SalaCreate(SalaBase):
-    pass
-
+    numero: int = Field(gt=0)
+    
 
 class SalaUpdate(BaseModel):
-    pass
+    capacidade: int | None = Field(default=None, gt=0)
+    tipo: TipoSala | None = None    
 
 
 class SalaResponse(SalaBase):
     model_config = ConfigDict(from_attributes=True)
+
+    numero: int

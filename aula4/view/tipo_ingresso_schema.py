@@ -1,11 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
-from fastapi import HTTPException
 
 
 class TipoIngressoBase(BaseModel):
     tipo: Literal[0, 1]
-    preco: float
+    preco: float = Field(gt=0)
 
 
 class TipoIngressoCreate(TipoIngressoBase):
@@ -14,7 +13,7 @@ class TipoIngressoCreate(TipoIngressoBase):
 
 class TipoIngressoUpdate(BaseModel):
     tipo: Literal[0, 1] | None = None
-    preco: float | None = None
+    preco: float | None = Field(default=None, gt=0)
 
 
 class TipoIngressoResponse(TipoIngressoBase):

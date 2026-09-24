@@ -24,33 +24,57 @@ class TestTipoIngressoAPI(ApiTestCase):
         self.assertEqual(resposta.status_code, 422)
 
     def test_post_tipo_repetido_retorna_409(self):
-        # TODO(ingresso): o model tem unique em `tipo` -- confirmar o 409
-        self.skipTest("TODO: POST com tipo repetido deve responder 409")
+        self.criar_tipo_ingresso(tipo=0, preco=50.0)
+
+        resposta = self.client.post("/tipos-ingresso", json={
+            "tipo": 0, "preco": 60.0,
+        })
+
+        self.assertEqual(resposta.status_code, 409)
 
     def test_post_preco_negativo_deve_ser_rejeitado(self):
-        # TODO(ingresso): ATENCAO -- TipoIngressoBase em view/ nao tem Field(gt=0),
-        # entao hoje preco=-10 passa. Decidam: adicionar a validacao no schema
-        # (recomendado) e este teste espera 422.
-        self.skipTest("TODO: preco <= 0 deve responder 422 (falta Field(gt=0) no schema)")
+        resposta = self.client.post("/tipos-ingresso", json={
+            "tipo": 0, "preco": -10.0,
+        })
+
+        self.assertEqual(resposta.status_code, 422)
 
     # --- READ -----------------------------------------------------------
     def test_get_tipos_ingresso_lista_os_cadastrados(self):
-        # TODO(ingresso): criar inteira e meia, conferir len == 2
-        self.skipTest("TODO: GET /tipos-ingresso deve listar os dois tipos")
+        self.criar_tipo_ingresso(tipo=0, preco=50.0)
+        self.criar_tipo_ingresso(tipo=1, preco=25.0)
+
+        resposta = self.client.get("/tipos-ingresso")
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertEqual(len(resposta.json()), 2)
+        self.assertEqual({item["tipo"] for item in resposta.json()}, {0, 1})
 
     def test_get_tipo_ingresso_inexistente_retorna_404(self):
-        # TODO(ingresso): GET /tipos-ingresso/999
-        self.skipTest("TODO: GET de codigo inexistente deve responder 404")
+        resposta = self.client.get("/tipos-ingresso/999")
+
+        self.assertEqual(resposta.status_code, 404)
 
     # --- UPDATE ---------------------------------------------------------
     def test_put_tipo_ingresso_atualiza_preco(self):
-        # TODO(ingresso): PUT mudando preco para 30.0
-        self.skipTest("TODO: PUT deve atualizar o preco")
+        ingresso = self.criar_tipo_ingresso(tipo=0, preco=50.0)
+
+        resposta = self.client.put(f"/tipos-ingresso/{ingresso['codigo']}", json={
+            "preco": 30.0,
+        })
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertEqual(resposta.json()["preco"], 30.0)
 
     # --- DELETE ---------------------------------------------------------
     def test_delete_tipo_ingresso_retorna_204(self):
-        # TODO(ingresso): DELETE e confirmar remocao
-        self.skipTest("TODO: DELETE deve responder 204")
+        ingresso = self.criar_tipo_ingresso(tipo=0, preco=50.0)
+
+        resposta = self.client.delete(f"/tipos-ingresso/{ingresso['codigo']}")
+        lista = self.client.get("/tipos-ingresso")
+
+        self.assertEqual(resposta.status_code, 204)
+        self.assertEqual(lista.json(), [])
 
 
 if __name__ == "__main__":

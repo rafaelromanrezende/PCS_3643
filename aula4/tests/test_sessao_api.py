@@ -25,34 +25,76 @@ class TestSessaoAPI(ApiTestCase):
         self.assertTrue(all(a["ocupado"] is False for a in sessao["assentos"]))
 
     def test_post_sessao_mesma_sala_data_hora_retorna_409(self):
-        # TODO(sessao): ha UniqueConstraint (sala_numero, data, hora_inicio).
-        # Reaproveite o filme/sala da primeira sessao nos campos da segunda.
-        self.skipTest("TODO: sessao duplicada na mesma sala/data/hora deve dar 409")
+        primeira = self.criar_sessao()
+        resposta = self.client.post("/sessoes", json={
+ "sala_numero": primeira["sala_numero"],
+            "filme_codigo": primeira["filme_codigo"],
+            "data": primeira["data"],
+            "hora_inicio": primeira["hora_inicio"],
+            "quantidade_assentos": 10,
+        })
+
+        self.assertEqual(resposta.status_code, 409)
+        self.assertIn("detail", resposta.json())
 
     def test_post_sessao_mesma_sala_horario_diferente_eh_permitido(self):
-        # TODO(sessao): mesma sala, hora_inicio "18:00:00" -> 201
-        self.skipTest("TODO: mesma sala em horario diferente deve dar 201")
+        primeira = self.criar_sessao()
+        resposta = self.client.post("/sessoes", json={
+            "sala_numero": primeira["sala_numero"],
+            "filme_codigo": primeira["filme_codigo"],
+            "data": primeira["data"],
+            "hora_inicio": "18:00:00",
+            "quantidade_assentos": 5,
+        })
 
-    # --- READ -----------------------------------------------------------
+        self.assertEqual(resposta.status_code, 201, resposta.text)
+        self.assertEqual(resposta.json()["hora_inicio"], "18:00:00")
+        self.assertEqual(resposta.json()["sala_numero"], primeira["sala_numero"])
+
     def test_get_sessoes_filtra_por_data(self):
-        # TODO(sessao): GET /sessoes?data=2026-03-15 -- o controller aceita esse
-        # query param. Criar sessoes em datas diferentes e conferir o filtro.
-        self.skipTest("TODO: GET /sessoes?data=... deve filtrar pela data")
+        primeira = self.criar_sessao(data="2026-03-15")
+        self.criar_sessao(
+            filme_codigo=primeira["filme_codigo"],
+            sala_numero=primeira["sala_numero"],
+            data="2026-03-16",
+        )
+
+        resposta = self.client.get("/sessoes?data=2026-03-15")
+
+        self.assertEqual(resposta.status_code, 200)
+        self.assertEqual(len(resposta.json()), 1)
+        self.assertEqual(resposta.json()[0]["codigo"], primeira["codigo"])
 
     def test_get_sessao_inexistente_retorna_404(self):
-        # TODO(sessao): GET /sessoes/999
-        self.skipTest("TODO: GET de codigo inexistente deve responder 404")
+        resposta = self.client.get("/sessoes/999")
 
-    # --- UPDATE ---------------------------------------------------------
+        self.assertEqual(resposta.status_code, 404)
+        self.assertIn("detail", resposta.json())
+
     def test_put_sessao_atualiza_hora_inicio(self):
-        # TODO(sessao): PUT mudando hora_inicio e conferindo no corpo
-        self.skipTest("TODO: PUT deve atualizar hora_inicio")
+        sessao = self.criar_sessao()
+        resposta = self.client.put(
+            f"/sessoes/{sessao['codigo']}",
+            json={"hora_inicio": "18:00:00"},
+        )
 
-    # --- DELETE ---------------------------------------------------------
+        self.assertEqual(resposta.status_code, 200, resposta.text)
+        self.assertEqual(resposta.json()["hora_inicio"], "18:00:00")
+        self.assertEqual(resposta.json()["filme_codigo"], sessao["filme_codigo"])
+
+        consulta = self.client.get(f"/sessoes/{sessao['codigo']}")
+        self.assertEqual(consulta.status_code, 200)
+        self.assertEqual(consulta.json()["hora_inicio"], "18:00:00")
+
     def test_delete_sessao_remove_os_assentos_em_cascata(self):
-        # TODO(sessao): o relacionamento tem cascade="all, delete-orphan".
-        # Apagar a sessao e confirmar 404 no GET seguinte.
-        self.skipTest("TODO: DELETE deve responder 204 e apagar os assentos")
+        sessao = self.criar_sessao(quantidade_assentos=3)
+        resposta = self.client.delete(f"/sessoes/{sessao['codigo']}")
+
+        self.assertEqual(resposta.status_code, 204)
+        self.assertEqual(resposta.content, b"")
+
+        consulta = self.client.get(f"/sessoes/{sessao['codigo']}")
+        self.assertEqual(consulta.status_code, 404)
 
 
 if __name__ == "__main__":

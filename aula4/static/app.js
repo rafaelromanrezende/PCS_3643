@@ -69,44 +69,12 @@ async function carregarFilmes() {
 async function carregarSessoes() {
   const container = document.getElementById("sessoes");
   try {
-    const [sessoes, filmes] = await Promise.all([
-      api("/sessoes"),
-      api("/filmes"),
-    ]);
-
-    if (sessoes.length === 0) {
-      container.innerHTML = "<p class='vazio'>Nenhuma sessão cadastrada.</p>";
-      return;
-    }
-
-    const nomesFilmes = new Map(
-      filmes.map((filme) => [filme.codigo, filme.nome])
-    );
-    
-    container.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Filme</th>
-            <th>Sala</th>
-            <th>Data</th>
-            <th>Início</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sessoes.map((sessao) => `
-            <tr>
-              <td>${esc(sessao.codigo)}</td>
-              <td>${esc(nomesFilmes.get(sessao.filme_codigo) ?? `Filme ${sessao.filme_codigo}`)}</td>
-              <td>${esc(sessao.sala_numero)}</td>
-              <td>${esc(sessao.data)}</td>
-              <td>${esc(sessao.hora_inicio.slice(0, 5))}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
+    const sessoes = await api("/sessoes");
+    // TODO(sessoes): montar tabela com codigo, filme, sala, data, hora_inicio.
+    // A resposta traz sala_numero/filme_codigo -- decidam se resolvem o nome
+    // do filme aqui (buscando /filmes) ou se o backend passa a devolver o
+    // objeto aninhado no SessaoResponse.
+    container.innerHTML = `<pre class="stub">${esc(JSON.stringify(sessoes, null, 2))}</pre>`;
   } catch (e) {
     erro(container, e);
   }
@@ -129,9 +97,36 @@ async function carregarIngressos() {
   const container = document.getElementById("ingressos");
   try {
     const tipos = await api("/tipos-ingresso");
-    // TODO(ingressos): montar tabela com codigo, tipo (0=inteira, 1=meia)
-    // e preco formatado em reais.
-    container.innerHTML = `<pre class="stub">${esc(JSON.stringify(tipos, null, 2))}</pre>`;
+if (tipos.length === 0) {
+      container.innerHTML = "<p class='vazio'>Nenhum tipo de ingresso cadastrado.</p>";
+      return;
+    }
+
+    const moeda = new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Codigo</th>
+            <th>Tipo</th>
+            <th>Preco</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tipos.map((ingresso) => `
+            <tr>
+              <td>${esc(ingresso.codigo)}</td>
+              <td>${esc(ingresso.tipo === 0 ? "Inteira" : "Meia")}</td>
+              <td>${esc(moeda.format(ingresso.preco))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
   } catch (e) {
     erro(container, e);
   }

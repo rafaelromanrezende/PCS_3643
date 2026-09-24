@@ -85,8 +85,32 @@ async function carregarSalas() {
   const container = document.getElementById("salas");
   try {
     const salas = await api("/salas");
-    // TODO(salas): montar tabela com numero, capacidade, tipo (2D/3D).
-    container.innerHTML = `<pre class="stub">${esc(JSON.stringify(salas, null, 2))}</pre>`;
+
+    if (salas.length === 0) {
+      container.innerHTML = "<p class='vazio'>Nenhuma sala cadastrada.</p>";
+      return;
+    }
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Capacidade</th>
+            <th>Tipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${salas.map((sala) => `
+            <tr>
+              <td>${esc(sala.numero)}</td>
+              <td>${esc(sala.capacidade)}</td>
+              <td>${esc(sala.tipo)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
   } catch (e) {
     erro(container, e);
   }

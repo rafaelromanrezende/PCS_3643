@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema PCS3643</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Cinema PCS3643</h1>
+    <p class="sub">As informacoes abaixo vem da REST API via <code>fetch()</code>.</p>
+  </header>
+
+  <nav class="abas">
+    <button class="aba ativa" data-painel="filmes">Filmes</button>
+    <button class="aba" data-painel="sessoes">Sessoes</button>
+    <button class="aba" data-painel="salas">Salas</button>
+    <button class="aba" data-painel="ingressos">Tipos de ingresso</button>
+  </nav>
+
+  <main>
+    <!-- Cada painel e' preenchido pela funcao de render correspondente em app.js -->
+    <section id="painel-filmes" class="painel ativo">
+      <div id="filmes" class="grade-cartazes"></div>
+    </section>
+
+    <section id="painel-sessoes" class="painel">
+      <div id="sessoes"></div>
+    </section>
+
+    <section id="painel-salas" class="painel">
+      <div id="salas"></div>
+    </section>
+
+    <section id="painel-ingressos" class="painel">
+      <div id="ingressos"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

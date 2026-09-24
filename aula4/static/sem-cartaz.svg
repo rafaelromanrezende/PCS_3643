@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" role="img" aria-label="Sem cartaz">
+  <rect width="200" height="300" fill="#1e2228"/>
+  <rect x="0.5" y="0.5" width="199" height="299" fill="none" stroke="#2e343d"/>
+  <g fill="none" stroke="#3d4551" stroke-width="4">
+    <circle cx="100" cy="128" r="34"/>
+    <path d="M86 112v32l28-16z" fill="#3d4551" stroke="none"/>
+  </g>
+  <text x="100" y="196" fill="#6b7480" font-family="system-ui, sans-serif"
+        font-size="14" text-anchor="middle">sem cartaz</text>
+</svg>

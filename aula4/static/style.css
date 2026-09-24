@@ -1,0 +1,95 @@
+:root {
+  --fundo: #14161a;
+  --cartao: #1e2228;
+  --borda: #2e343d;
+  --texto: #e8eaed;
+  --fraco: #9aa3af;
+  --destaque: #e0b341;
+  --erro: #f07171;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 16px 48px;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+header { padding: 32px 0 16px; }
+h1 { margin: 0; font-size: 1.75rem; }
+.sub { margin: 4px 0 0; color: var(--fraco); font-size: .9rem; }
+
+/* abas */
+.abas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+
+.aba {
+  padding: 8px 16px;
+  background: var(--cartao);
+  color: var(--fraco);
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+.aba:hover { color: var(--texto); }
+.aba.ativa { color: var(--fundo); background: var(--destaque); border-color: var(--destaque); }
+
+.painel { display: none; }
+.painel.ativo { display: block; }
+
+/* filmes */
+.grade-cartazes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.cartao-filme {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.cartaz {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  background: var(--fundo);
+  border-radius: 4px;
+  display: block;
+}
+
+.cartao-filme h3 { margin: 12px 0 8px; font-size: 1rem; }
+
+.cartao-filme dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  font-size: .8rem;
+}
+.cartao-filme dt { color: var(--fraco); }
+.cartao-filme dd { margin: 0; }
+
+/* tabelas (para os TODOs de sessoes/salas/ingressos) */
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--borda); }
+th { color: var(--fraco); font-weight: 600; }
+
+.stub {
+  background: var(--cartao);
+  border: 1px dashed var(--borda);
+  border-radius: 6px;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: .8rem;
+  color: var(--fraco);
+}
+
+.vazio { color: var(--fraco); }
+.erro { color: var(--erro); }
